@@ -99,6 +99,7 @@ Below is a technical details about system architecture and design patterns used 
 * Apply frontend layer to give a magic appearance and also a client validation layer.
 * Apply user authentication system. 
 * Use MongoDB instead of local JSON files.
+* Add features of adding/ assigning/ tracking resources (Board, chairs, ... etc) across rooms.
 
 ## Conclusion
 This project is built for demo/ testing purposes and it still under enhancements. 
