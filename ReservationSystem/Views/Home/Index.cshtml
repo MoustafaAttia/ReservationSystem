@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+    <div class="text-center">
+        <h4>Welcome to reservation system</h4>
+
+
+        @Html.ActionLink("Schedule meeting", "AddReservation", "Reservations") <br />
+
+        @Html.ActionLink("See all reservations", "ListReservation", "Reservations") <br />
+
+
+    </div>
+
+    <div class="text-left">
+        <p>Configurations : </p>
+        @Html.ActionLink("Set offices", "Offices", "Home") <br />
+        @Html.ActionLink("Set rooms", "Rooms", "Home") <br />
+    </div>

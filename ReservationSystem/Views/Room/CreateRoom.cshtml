@@ -1,0 +1,125 @@
+﻿@model ReservationSystem.Models.ViewModel.RoomViewModel
+
+@{
+    ViewData["Title"] = "CreateRoom";
+}
+
+<h1>CreateRoom</h1>
+
+<h4>Room</h4>
+<hr />
+
+@{
+    string disabled = "";
+
+
+    if (Model.Errors != null && Model.Errors.Count > 0)
+    {
+        disabled = "disabled";
+        foreach (var err in Model.Errors)
+        {
+            <div class="text-danger">
+                @err
+            </div>
+        }
+    }
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateRoom">
+            @Html.HiddenFor(model => model.room.RoomId)
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="room.RoomName" class="control-label"></label>
+                <input asp-for="room.RoomName" class="form-control" />
+                <span asp-validation-for="room.RoomName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="room.Capacity" class="control-label"></label>
+                <input asp-for="room.Capacity" class="form-control" />
+                <span asp-validation-for="room.Capacity" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                Office location
+                <div class="col-md-10">
+                    <select asp-for="room.OfficeId" asp-items="@Model.offices"></select>
+                </div>
+            </div>
+
+
+
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="room.HasChairs" /> This room contain charis ?
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" @disabled />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    @if (Model != null && Model.allRooms != null)
+    {
+        <tr>
+            <th>Room id </th>
+            <th>Room Name</th>
+            <th>Capacity </th>
+            <th>Office </th>
+            <th>Contains chairs </th>
+            <th> </th>
+        </tr>
+        foreach (var item in Model.allRooms)
+        {
+
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.RoomName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Capacity)
+                </td>
+                <td>
+                    @Model.offices.Where(y => y.Value == item.OfficeId.ToString()).FirstOrDefault().Text
+                </td>
+
+                <td>
+
+                    @if (item.HasChairs)
+                    {
+                        <label>Yes</label>
+                    }
+                    else
+                    {
+                        <label>No</label>
+                    }
+
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "EditRoom", new { id = item.RoomId }) |
+                    @Html.ActionLink("Delete", "DeleteRoom", new { id = item.RoomId }, new { onclick = "return confirm('Are you sure you want to delete this item?');" })
+                </td>
+            </tr>
+
+        }
+    }
+</table>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,81 @@
+﻿@model ReservationSystem.Models.ViewModel.OfficeViewModel
+
+@{
+    ViewData["Title"] = "CreateOffice";
+}
+
+<h1>CreateOffice</h1>
+
+<h4>Office</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateOffice">
+            @Html.HiddenFor(model => model.office.OfficeId)
+            @if (ViewBag.Message != null)
+            {
+                <div class="text-danger">
+                    @ViewBag.Message
+                </div>
+            }
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="office.Country" class="control-label"></label>
+                <input asp-for="office.Country" class="form-control" />
+                <span asp-validation-for="office.Country" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="office.City" class="control-label"></label>
+                <input asp-for="office.City" class="form-control" />
+                <span asp-validation-for="office.City" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+
+    <table class="table">
+        @if (Model != null && Model.allOffices != null)
+        {
+            <tr>
+                <th>Office id </th>
+                <th>Country </th>
+                <th>City </th>
+                <th>Timezone </th>
+                <th> </th>
+            </tr>
+            foreach (var item in Model.allOffices)
+            {
+
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.OfficeId)
+
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Country)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.City)
+                    </td>
+
+                    <td>
+                        @Html.ActionLink("Edit", "EditOffice", new { id = item.OfficeId }) |
+                        @Html.ActionLink("Delete", "DeleteOffice", new { id = item.OfficeId }, new { onclick = "return confirm('Are you sure you want to delete this item?');" })
+                    </td>
+                </tr>
+
+            }
+        }
+    </table>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

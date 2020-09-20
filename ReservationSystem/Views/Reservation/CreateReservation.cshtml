@@ -1,0 +1,118 @@
+﻿@model ReservationSystem.Models.ViewModel.ReservationViewModel
+
+@{
+    ViewData["Title"] = "CreateReservation";
+}
+
+<h1>CreateReservation</h1>
+
+<h4>Reservation</h4>
+<hr />
+
+@{
+    string disabled = "";
+
+
+    if (Model.Errors != null && Model.Errors.Count > 0)
+    {
+        disabled = "disabled";
+        foreach (var err in Model.Errors)
+        {
+            <div class="text-danger">
+                @err
+            </div>
+        }
+    }
+}
+
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateReservation">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="reservation.Organizer" class="control-label"></label>
+                <input asp-for="reservation.Organizer" class="form-control" />
+                <span asp-validation-for="reservation.Organizer" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                Office location
+                <div class="col-md-10">
+                    <select id="officesDDL" asp-for="reservation.OfficeId" asp-items="@Model.offices" onload="GetRooms()" onchange="GetRooms()"></select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                Rooms at this office
+                <div class="col-md-10">
+                    <select id="roomsDDL" asp-for="reservation.RoomId"></select>
+                </div>
+            </div>
+
+            <div id="roomsWarningDiv" class="text-warning">
+                fdsfs
+            </div>
+
+            <div class="text-warning">
+                Please note that minutes will be rounded to nearst 5
+            </div>
+
+            <div class="form-group">
+                <label asp-for="reservation.timeFrom" class="control-label"></label>
+                <input asp-for="reservation.timeFrom" class="form-control" />
+                <span asp-validation-for="reservation.timeFrom" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="reservation.timeTo" class="control-label"></label>
+                <input asp-for="reservation.timeTo" class="form-control" />
+                <span asp-validation-for="reservation.timeTo" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="reservation.NumberOfAttendees" class="control-label"></label>
+                <input asp-for="reservation.NumberOfAttendees" class="form-control" />
+                <span asp-validation-for="reservation.NumberOfAttendees" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script language="javascript" type="text/javascript">
+    function GetRooms() {
+        var procemessage = "<option value='0'> Please wait...</option>";
+        var _officeId = $('#officesDDL').val();
+        $("#roomsDDL").html(procemessage).show();
+        var url = '@Url.Action("GetRoomByOfficeId","Reservations")' + "?officeId=" + _officeId;
+
+        $.ajax({
+            url: url,
+            data: { officeId: _officeId },
+            cache: false,
+            type: "GET",
+            success: function (data) {
+                var markup = "";
+                for (var x = 0; x < data.length; x++) {
+                    markup += "<option value=" + data[x].id + ">" + data[x].value + "</option>";
+                }
+                $("#roomsDDL").html(markup).show();
+            },
+            error: function (reponse) {
+                alert("error : " + reponse);
+            }
+        });
+    }
+</script>

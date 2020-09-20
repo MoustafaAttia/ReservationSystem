@@ -1,0 +1,111 @@
+﻿@model ReservationSystem.Models.ViewModel.ReservationViewModel
+
+@{
+    ViewData["Title"] = "ListReservations";
+}
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    </head>
+<h1>ListReservations</h1>
+
+
+@{
+    if (Model.Errors != null && Model.Errors.Count > 0)
+    {
+        foreach (var err in Model.Errors)
+        {
+            <div class="text-danger">
+                @err
+            </div>
+        }
+    }
+    if (Model.allReservations == null || Model.allReservations.Count == 0)
+    {
+        <div class="text-danger">
+            No meeting reservations created.
+        </div>
+    }
+}
+
+<input class="form-control" id="searchInput" type="text" placeholder="Search ..">
+<br />
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.ReservationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.timeFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.timeTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.Organizer)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.RoomId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.OfficeId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.NumberOfAttendees)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.reservation.CreationDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="reservationsTableList">
+        @foreach (var item in Model.allReservations)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReservationId)
+                </td>
+                <td>
+                    @item.timeFrom.ToString("dd MMM yyyy HH:mm")
+                </td>
+                <td>
+                    @item.timeTo.ToString("dd MMM yyyy HH:mm")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Organizer)
+                </td>
+                <td>
+                    @Model.rooms.Where(y => y.Value == item.RoomId.ToString()).FirstOrDefault().Text
+                </td>
+                <td>
+                    @Model.offices.Where(y => y.Value == item.OfficeId.ToString()).FirstOrDefault().Text
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NumberOfAttendees)
+                </td>
+                <td>
+                    @item.CreationDate.ToString("dd MMM yyyy")
+                </td>
+                <td>
+                    @Html.ActionLink("Cancel", "DeleteReservation", new {  id=item.ReservationId }, new { onclick = "return confirm('Are you sure you want to cancel this meeting?');" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(function(){
+  $("#searchInput").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $("#reservationsTableList tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
